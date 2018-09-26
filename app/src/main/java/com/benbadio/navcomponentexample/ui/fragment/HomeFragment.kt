@@ -1,13 +1,15 @@
 package com.benbadio.navcomponentexample.ui.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.benbadio.navcomponentexample.R
-import kotlinx.android.synthetic.main.fragment_layout.view.imageView
-import kotlinx.android.synthetic.main.fragment_layout.view.textView
+import com.benbadio.navcomponentexample.ui.activity.MainActivity
+import kotlinx.android.synthetic.main.fragment_home.view.navByActionButton
+import kotlinx.android.synthetic.main.fragment_home.view.navByDestinationButton
 
 class HomeFragment : Fragment() {
 
@@ -16,7 +18,7 @@ class HomeFragment : Fragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return inflater.inflate(R.layout.fragment_layout, container, false)
+    return inflater.inflate(R.layout.fragment_home, container, false)
   }
 
   override fun onViewCreated(
@@ -24,7 +26,12 @@ class HomeFragment : Fragment() {
     savedInstanceState: Bundle?
   ) {
     super.onViewCreated(view, savedInstanceState)
-    view.textView.setText(R.string.title_home)
-    view.imageView.setImageResource(R.drawable.ic_home_black_24dp)
+    (activity as MainActivity).toggleMenus(true)
+    view.navByDestinationButton.setOnClickListener(
+        Navigation.createNavigateOnClickListener(R.id.stepOneFragment)
+    )
+    view.navByActionButton.setOnClickListener(
+        Navigation.createNavigateOnClickListener(R.id.action_next)
+    )
   }
 }

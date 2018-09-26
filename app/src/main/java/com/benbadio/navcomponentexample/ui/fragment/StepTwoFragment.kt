@@ -1,22 +1,22 @@
 package com.benbadio.navcomponentexample.ui.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.benbadio.navcomponentexample.R
-import kotlinx.android.synthetic.main.fragment_layout.view.imageView
-import kotlinx.android.synthetic.main.fragment_layout.view.textView
+import kotlinx.android.synthetic.main.fragment_step_two.view.nextButton
 
-class NotificationFragment : Fragment() {
+class StepTwoFragment : Fragment() {
 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return inflater.inflate(R.layout.fragment_layout, container, false)
+    return inflater.inflate(R.layout.fragment_step_two, container, false)
   }
 
   override fun onViewCreated(
@@ -24,7 +24,8 @@ class NotificationFragment : Fragment() {
     savedInstanceState: Bundle?
   ) {
     super.onViewCreated(view, savedInstanceState)
-    view.textView.setText(R.string.title_notifications)
-    view.imageView.setImageResource(R.drawable.ic_notifications_black_24dp)
+    view.nextButton.setOnClickListener(
+        Navigation.createNavigateOnClickListener(R.id.action_next)
+    )
   }
 }

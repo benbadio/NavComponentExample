@@ -1,48 +1,59 @@
 package com.benbadio.navcomponentexample.ui.activity
 
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import com.benbadio.navcomponentexample.R.id
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
+import com.benbadio.navcomponentexample.R
 import com.benbadio.navcomponentexample.R.layout
-import com.benbadio.navcomponentexample.ui.fragment.DashboardFragment
-import com.benbadio.navcomponentexample.ui.fragment.HomeFragment
-import com.benbadio.navcomponentexample.ui.fragment.NotificationFragment
-import kotlinx.android.synthetic.main.activity_main.navigation
+import kotlinx.android.synthetic.main.activity_main.bottomNavigation
 
 class MainActivity : AppCompatActivity() {
-
-  private val mOnNavigationItemSelectedListener =
-    BottomNavigationView.OnNavigationItemSelectedListener { item ->
-      when (item.itemId) {
-        id.navigation_home -> {
-          navigateTo(HomeFragment())
-          return@OnNavigationItemSelectedListener true
-        }
-        id.navigation_dashboard -> {
-          navigateTo(DashboardFragment())
-          return@OnNavigationItemSelectedListener true
-        }
-        id.navigation_notifications -> {
-          navigateTo(NotificationFragment())
-          return@OnNavigationItemSelectedListener true
-        }
-
-      }
-      false
-    }
-
-  fun navigateTo(fragment: Fragment) {
-    supportFragmentManager.beginTransaction()
-        .replace(id.fragmentHost, fragment)
-        .commit()
-  }
+  private var showMenus = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(layout.activity_main)
-    navigateTo(HomeFragment())
-    navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    val host: NavHostFragment =
+      supportFragmentManager.findFragmentById(R.id.fragmentHost) as NavHostFragment? ?: return
+    val navController = host.navController
+    bottomNavigation.setupWithNavController(navController)
+
+    navController.addOnNavigatedListener { controller, destination ->
+      when (destination.id) {
+        R.id.homeFragment -> toggleMenus(true)
+        R.id.loginFragment -> toggleMenus(false)
+      }
+    }
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    val retValue = super.onCreateOptionsMenu(menu)
+    menuInflater.inflate(R.menu.menu_overflow, menu)
+    for (i in 0 until menu.size()) {
+      menu.getItem(i)
+          .isVisible = showMenus
+    }
+    return retValue
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return NavigationUI.onNavDestinationSelected(
+        item, findNavController(R.id.fragmentHost)
+    ) || super.onOptionsItemSelected(item)
+  }
+
+  fun toggleMenus(show: Boolean) {
+    showMenus = show
+    invalidateOptionsMenu()
+    bottomNavigation.visibility = if (showMenus) {
+      View.VISIBLE
+    } else
+      View.GONE
   }
 }
